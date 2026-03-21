@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SendEmailRequest, BrevoEmailPayload } from '../types';
+import { SendEmailRequest, BrevoEmailPayload, EmailAttachment } from '../types.js';
 
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
@@ -17,17 +17,17 @@ export const sendViaBrevo = async (data: SendEmailRequest) => {
       email: data.from?.email || defaultSenderEmail,
       name: data.from?.name || defaultSenderName,
     },
-    to: data.to.map(email => ({ email })),
+    to: data.to.map((email: string) => ({ email })),
     subject: data.subject,
     htmlContent: data.html,
   };
 
   if (data.cc && data.cc.length > 0) {
-    payload.cc = data.cc.map(email => ({ email }));
+    payload.cc = data.cc.map((email: string) => ({ email }));
   }
 
   if (data.bcc && data.bcc.length > 0) {
-    payload.bcc = data.bcc.map(email => ({ email }));
+    payload.bcc = data.bcc.map((email: string) => ({ email }));
   }
 
   if (data.replyTo) {
@@ -35,7 +35,7 @@ export const sendViaBrevo = async (data: SendEmailRequest) => {
   }
 
   if (data.attachments && data.attachments.length > 0) {
-    payload.attachment = data.attachments.map(att => ({
+    payload.attachment = data.attachments.map((att: EmailAttachment) => ({
       content: att.content,
       name: att.name,
     }));

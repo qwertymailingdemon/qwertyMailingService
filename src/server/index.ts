@@ -4,9 +4,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
-import { authenticateApiKey } from './middlewares/auth';
-import { validateEmailRequest } from './middlewares/validation';
-import { sendViaBrevo } from './services/brevoService';
+import { authenticateApiKey } from './middlewares/auth.js';
+import { validateEmailRequest } from './middlewares/validation.js';
+import { sendViaBrevo } from './services/brevoService.js';
 
 dotenv.config();
 
