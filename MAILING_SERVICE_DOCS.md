@@ -8,7 +8,7 @@ A production-ready microservice for sending transactional emails via Brevo.
    - Connect your GitHub repository.
    - **Runtime**: Node
    - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `node dist/server/index.js` (or `npx ts-node src/server/index.ts` for quick start)
+   - **Start Command**: `npm start`
 
 2. **Environment Variables**:
    Add the following in the Render Dashboard:
