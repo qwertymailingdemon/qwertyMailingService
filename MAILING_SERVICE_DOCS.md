@@ -2,6 +2,24 @@
 
 A production-ready microservice for sending transactional emails via Brevo.
 
+## 💻 Local Development
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Build the Project**:
+   This compiles both the frontend and the backend server.
+   ```bash
+   npm run build
+   ```
+
+3. **Start the Service**:
+   ```bash
+   npm start
+   ```
+
 ## 🚀 Deployment on Render
 
 1. **Create a New Web Service**:
@@ -21,7 +39,7 @@ A production-ready microservice for sending transactional emails via Brevo.
 ## 📘 API Reference
 
 ### Base URL
-`https://your-service-name.onrender.com`
+`https://your-service-name.onrender.com` (or `http://localhost:10000` locally)
 
 ### Authentication
 All requests must include the following header:
@@ -46,64 +64,11 @@ Sends a transactional email.
   "from": {
     "email": "verified@yourdomain.com",
     "name": "Custom Sender"
-  },
-  "cc": ["manager@example.com"],
-  "attachments": [
-    {
-      "name": "invoice.pdf",
-      "content": "JVBERi0xLjQKJ..." 
-    }
-  ]
+  }
 }
-```
-
-### Example Requests
-
-#### JavaScript (Fetch)
-```javascript
-const response = await fetch('https://your-service.onrender.com/send-email', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-api-key': 'YOUR_SERVICE_API_KEY'
-  },
-  body: JSON.stringify({
-    to: ['user@example.com'],
-    subject: 'Test Email',
-    html: '<p>Hello World</p>'
-  })
-});
-const data = await response.json();
-```
-
-#### Python (Requests)
-```python
-import requests
-
-url = "https://your-service.onrender.com/send-email"
-headers = {
-    "Content-Type": "application/json",
-    "x-api-key": "YOUR_SERVICE_API_KEY"
-}
-payload = {
-    "to": ["user@example.com"],
-    "subject": "Test Email",
-    "html": "<p>Hello World</p>"
-}
-
-response = requests.post(url, json=payload, headers=headers)
-print(response.json())
 ```
 
 ## 🔐 Security
 - **API Key Auth**: Custom middleware ensures only authorized clients can send emails.
 - **Rate Limiting**: Prevents abuse by limiting requests per IP.
-- **Input Validation**: Zod ensures all payloads are correctly formatted before hitting Brevo.
-- **Helmet**: Adds security headers to the Express app.
-
-## 📧 Verifying Senders in Brevo
-1. Log in to Brevo.
-2. Go to **Senders & IP**.
-3. Click **Add a sender**.
-4. Enter the email address and verify it via the link sent to that inbox.
-5. Only verified emails can be used in the `from` field or as `DEFAULT_SENDER_EMAIL`.
+- **Input Validation**: Zod ensures all payloads are correctly formatted.
