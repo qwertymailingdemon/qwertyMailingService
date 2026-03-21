@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Shield, Send, CheckCircle2, AlertCircle, Code2 } from "lucide-react";
+import { Mail, Shield, Send, CheckCircle2, AlertCircle, Code2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -13,9 +13,15 @@ const Index = () => {
     to: '',
     subject: 'Test Email from Mailing Agent',
     html: '<h1>Hello!</h1><p>This is a test email sent from the Mailing Agent Service.</p>',
-    apiKey: '',
-    serviceUrl: 'http://localhost:10000'
+    apiKey: localStorage.getItem('mailing_service_key') || '',
+    serviceUrl: localStorage.getItem('mailing_service_url') || 'http://localhost:10000'
   });
+
+  // Persist configuration to local storage
+  useEffect(() => {
+    localStorage.setItem('mailing_service_key', formData.apiKey);
+    localStorage.setItem('mailing_service_url', formData.serviceUrl);
+  }, [formData.apiKey, formData.serviceUrl]);
 
   const handleSendTest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +49,7 @@ const Index = () => {
         toast.error(data.error || "Failed to send email");
       }
     } catch (error) {
-      toast.error("Could not connect to the service. Make sure it's running.");
+      toast.error("Could not connect to the service. Make sure it's running and the URL is correct.");
     } finally {
       setLoading(false);
     }
@@ -74,7 +80,7 @@ const Index = () => {
                 <CardTitle className="text-xl flex items-center gap-2">
                   <Send className="w-5 h-5 text-blue-500" /> Test Your Service
                 </CardTitle>
-                <CardDescription>Send a test email to verify your configuration.</CardDescription>
+                <CardDescription>Send a test email to verify your configuration. Settings are saved locally.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSendTest} className="space-y-4">
@@ -83,7 +89,7 @@ const Index = () => {
                       <Label htmlFor="serviceUrl">Service URL</Label>
                       <Input 
                         id="serviceUrl" 
-                        placeholder="https://your-app.render.com" 
+                        placeholder="http://localhost:10000" 
                         value={formData.serviceUrl}
                         onChange={(e) => setFormData({...formData, serviceUrl: e.target.value})}
                       />
@@ -149,16 +155,24 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
+                <p className="text-sm text-slate-400 mb-4">Use this snippet in your other applications to send emails through this service.</p>
                 <pre className="bg-slate-800 p-4 rounded-lg overflow-x-auto text-xs text-blue-300">
-{`// Example cURL request
-curl -X POST ${formData.serviceUrl || 'https://your-service.com'}/send-email \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: YOUR_API_KEY" \\
-  -d '{
-    "to": ["user@example.com"],
-    "subject": "Welcome!",
-    "html": "<h1>Hello World</h1>"
-  }'`}
+{`// Example JavaScript/TypeScript request
+const sendEmail = async () => {
+  const response = await fetch('${formData.serviceUrl || 'https://your-service.com'}/send-email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'YOUR_SERVICE_API_KEY' // Must match backend .env
+    },
+    body: JSON.stringify({
+      to: ["user@example.com"],
+      subject: "Welcome!",
+      html: "<h1>Hello World</h1>"
+    })
+  });
+  return await response.json();
+};`}
                 </pre>
               </CardContent>
             </Card>
