@@ -6,20 +6,35 @@ const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 export const sendViaBrevo = async (data: SendEmailRequest) => {
   const apiKey = process.env.BREVO_API_KEY;
   const defaultSenderEmail = process.env.DEFAULT_SENDER_EMAIL || '';
-  const defaultSenderName = process.env.DEFAULT_SENDER_NAME || 'Mailing Service';
+  const defaultSenderName = 'qwerty-developers'; // Updated sender name
 
   if (!apiKey) {
     throw new Error('BREVO_API_KEY is not configured');
   }
 
-  const payload: BrevoEmailPayload = {
+  // Append a basic unsubscribe footer if not present
+  const unsubscribeFooter = `
+    <br><br>
+    <hr>
+    <p style="font-size: 12px; color: #666;">
+      You are receiving this because you are part of the qwerty-developers network. 
+      <a href="{{unsubscribe_url}}" style="color: #3b82f6;">Unsubscribe</a>
+    </p>
+  `;
+
+  const payload: any = {
     sender: {
       email: data.from?.email || defaultSenderEmail,
-      name: data.from?.name || defaultSenderName,
+      name: defaultSenderName,
     },
     to: data.to.map((email: string) => ({ email })),
     subject: data.subject,
-    htmlContent: data.html,
+    htmlContent: data.html.includes('Unsubscribe') ? data.html : data.html + unsubscribeFooter,
+    // Brevo specific headers for unsubscription
+    headers: {
+      "List-Unsubscribe": "<mailto:unsubscribe@yourdomain.com>, <https://yourdomain.com/unsubscribe>",
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"
+    }
   };
 
   if (data.cc && data.cc.length > 0) {

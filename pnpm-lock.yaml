@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@dyad-sh/react-vite-component-tagger':
+        specifier: ^0.8.0
+        version: 0.8.0(vite@6.4.1(@types/node@22.19.15)(jiti@1.21.7))
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.10.0(react-hook-form@7.71.2(react@19.2.4))
@@ -95,6 +98,30 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.56.2
         version: 5.91.3(react@19.2.4)
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.19
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.25
+      '@types/morgan':
+        specifier: ^1.9.9
+        version: 1.9.10
+      '@types/node':
+        specifier: ^22.5.5
+        version: 22.19.15
+      '@types/react':
+        specifier: ^19.2.8
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.9.0
+        version: 3.11.0(vite@6.4.1(@types/node@22.19.15)(jiti@1.21.7))
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.27(postcss@8.5.8)
       axios:
         specifier: ^1.7.7
         version: 1.13.6
@@ -140,6 +167,9 @@ importers:
       next-themes:
         specifier: ^0.4.4
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      postcss:
+        specifier: ^8.4.47
+        version: 8.5.8
       react:
         specifier: ^19.2.3
         version: 19.2.4
@@ -167,49 +197,31 @@ importers:
       tailwind-merge:
         specifier: ^2.5.2
         version: 2.6.1
+      tailwindcss:
+        specifier: ^3.4.11
+        version: 3.4.19
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.19)
+      typescript:
+        specifier: ^5.5.3
+        version: 5.9.3
       vaul:
         specifier: ^0.9.3
         version: 0.9.9(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      vite:
+        specifier: ^6.3.4
+        version: 6.4.1(@types/node@22.19.15)(jiti@1.21.7)
       zod:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
-      '@dyad-sh/react-vite-component-tagger':
-        specifier: ^0.8.0
-        version: 0.8.0(vite@6.4.1(@types/node@22.19.15)(jiti@1.21.7))
       '@eslint/js':
         specifier: ^9.9.0
         version: 9.39.4
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.19(tailwindcss@3.4.19)
-      '@types/cors':
-        specifier: ^2.8.17
-        version: 2.8.19
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.25
-      '@types/morgan':
-        specifier: ^1.9.9
-        version: 1.9.10
-      '@types/node':
-        specifier: ^22.5.5
-        version: 22.19.15
-      '@types/react':
-        specifier: ^19.2.8
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react-swc':
-        specifier: ^3.9.0
-        version: 3.11.0(vite@6.4.1(@types/node@22.19.15)(jiti@1.21.7))
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.4.27(postcss@8.5.8)
       eslint:
         specifier: ^9.9.0
         version: 9.39.4(jiti@1.21.7)
@@ -222,21 +234,9 @@ importers:
       globals:
         specifier: ^15.9.0
         version: 15.15.0
-      postcss:
-        specifier: ^8.4.47
-        version: 8.5.8
-      tailwindcss:
-        specifier: ^3.4.11
-        version: 3.4.19
-      typescript:
-        specifier: ^5.5.3
-        version: 5.9.3
       typescript-eslint:
         specifier: ^8.0.1
         version: 8.57.1(eslint@9.39.4(jiti@1.21.7))(typescript@5.9.3)
-      vite:
-        specifier: ^6.3.4
-        version: 6.4.1(@types/node@22.19.15)(jiti@1.21.7)
 
 packages:
 
