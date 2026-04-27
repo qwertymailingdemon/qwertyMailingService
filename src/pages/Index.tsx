@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Shield, Send, CheckCircle2, AlertCircle, Code2, Zap } from "lucide-react";
+import { Mail, Shield, Send, CheckCircle2, AlertCircle, Zap } from "lucide-react";
 import { toast } from "sonner";
+import MailingTestPanel from '@/components/MailingTestPanel';
 
 const Index = () => {
   const [loading, setLoading] = useState(false);
@@ -86,15 +87,17 @@ const Index = () => {
                       <Label htmlFor="serviceUrl">Service URL</Label>
                       <Input 
                         id="serviceUrl" 
+                        placeholder="https://your-app.onrender.com"
                         value={formData.serviceUrl}
                         onChange={(e) => setFormData({...formData, serviceUrl: e.target.value})}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="apiKey">API Key</Label>
+                      <Label htmlFor="apiKey">Service API Key (Password)</Label>
                       <Input 
                         id="apiKey" 
                         type="password"
+                        placeholder="Enter your secret key"
                         value={formData.apiKey}
                         onChange={(e) => setFormData({...formData, apiKey: e.target.value})}
                       />
@@ -107,6 +110,7 @@ const Index = () => {
                       id="to" 
                       type="email" 
                       required
+                      placeholder="recipient@example.com"
                       value={formData.to}
                       onChange={(e) => setFormData({...formData, to: e.target.value})}
                     />
@@ -142,6 +146,12 @@ const Index = () => {
           </div>
 
           <div className="space-y-6">
+            {/* New Diagnostic Panel */}
+            <MailingTestPanel 
+              serviceUrl={formData.serviceUrl} 
+              apiKey={formData.apiKey} 
+            />
+
             <Card className="border-none shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg">Service Status</CardTitle>
