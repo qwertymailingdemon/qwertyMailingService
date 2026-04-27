@@ -2,10 +2,9 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Beaker, AlertTriangle, CheckCircle2, Info, KeyRound, Loader2 } from "lucide-react";
+import { Beaker, AlertTriangle, CheckCircle2, Info, Loader2, ExternalLink } from "lucide-react";
 
 interface MailingTestPanelProps {
   serviceUrl: string;
@@ -14,42 +13,44 @@ interface MailingTestPanelProps {
 
 const MailingTestPanel = ({ serviceUrl, apiKey }: MailingTestPanelProps) => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorDetail, setErrorDetail] = useState<{ message: string; solution: string } | null>(null);
+  const [errorDetail, setErrorDetail] = useState<{ message: string; solution: string; link?: string } | null>(null);
 
   const troubleshootError = (error: any, data?: any) => {
-    const msg = data?.error || error.message || "Unknown connection error";
+    const msg = data?.error || error?.message || "Unknown connection error";
     
+    // Specific Brevo "Not Enabled" Error
+    if (msg.toLowerCase().includes("api key not enabled") || msg.toLowerCase().includes("not_enabled")) {
+      return {
+        message: "Brevo API Key Not Activated",
+        solution: "Your Brevo API key is valid but 'Transactional' features are not enabled. Go to Brevo -> SMTP & API -> Settings and ensure Transactional emails are active.",
+        link: "https://app.brevo.com/settings/keys/api"
+      };
+    }
+
     if (msg.includes("Unauthorized") || msg.includes("Invalid or missing API key")) {
       return {
         message: "Authentication Failed (401)",
-        solution: "Your 'Service API Key' does not match the SERVICE_API_KEY set in your Render environment variables."
+        solution: "The 'Service API Key' you entered doesn't match the SERVICE_API_KEY set in your Render environment variables."
       };
     }
     
     if (msg.includes("BREVO_API_KEY is not configured")) {
       return {
-        message: "Brevo Configuration Missing",
-        solution: "You need to add BREVO_API_KEY to your Render environment variables. Get it from your Brevo dashboard."
+        message: "Brevo Config Missing",
+        solution: "The BREVO_API_KEY environment variable is missing on Render. Add it to your Web Service settings."
       };
     }
 
     if (msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
       return {
         message: "Service Unreachable",
-        solution: "The server is either offline or the Service URL is incorrect. If on Render, wait 30s for it to wake up."
-      };
-    }
-
-    if (data?.details?.code === "invalid_parameter") {
-      return {
-        message: "Invalid Sender Identity",
-        solution: "The DEFAULT_SENDER_EMAIL in your environment variables is not a verified sender in your Brevo account."
+        solution: "The server is offline or the URL is wrong. If using Render's free tier, it may take 30-60s to 'wake up' after inactivity."
       };
     }
 
     return {
       message: msg,
-      solution: "Check the server logs in the Render dashboard for a detailed stack trace."
+      solution: "Check your Render service logs for the full error trace. This usually happens if an environment variable is missing or incorrect."
     };
   };
 
@@ -79,12 +80,8 @@ const MailingTestPanel = ({ serviceUrl, apiKey }: MailingTestPanelProps) => {
           html: `
             <div style="font-family: sans-serif; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
               <h2 style="color: #2563eb;">Diagnostic Successful</h2>
-              <p>Your mailing agent is fully operational and connected to Brevo.</p>
-              <ul style="color: #475569;">
-                <li><strong>Target:</strong> gunjarigourav@gmail.com</li>
-                <li><strong>Timestamp:</strong> ${new Date().toLocaleString()}</li>
-                <li><strong>Status:</strong> Verified</li>
-              </ul>
+              <p>Your mailing agent is fully operational.</p>
+              <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
             </div>
           `
         })
@@ -112,7 +109,7 @@ const MailingTestPanel = ({ serviceUrl, apiKey }: MailingTestPanelProps) => {
           <Beaker className="w-5 h-5 text-blue-500" /> System Diagnostics
         </CardTitle>
         <CardDescription>
-          Run a verified test to <b>gunjarigourav@gmail.com</b>
+          Test delivery to <b>gunjarigourav@gmail.com</b>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -134,7 +131,7 @@ const MailingTestPanel = ({ serviceUrl, apiKey }: MailingTestPanelProps) => {
             <CheckCircle2 className="h-4 w-4 text-green-600" />
             <AlertTitle>Success!</AlertTitle>
             <AlertDescription>
-              Diagnostic email dispatched. Check your inbox at gunjarigourav@gmail.com.
+              Diagnostic email dispatched successfully.
             </AlertDescription>
           </Alert>
         )}
@@ -144,18 +141,20 @@ const MailingTestPanel = ({ serviceUrl, apiKey }: MailingTestPanelProps) => {
             <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-900">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertTitle>{errorDetail.message}</AlertTitle>
-              <AlertDescription>
+              <AlertDescription className="mt-2">
                 {errorDetail.solution}
+                {errorDetail.link && (
+                  <a 
+                    href={errorDetail.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="mt-2 flex items-center gap-1 text-blue-600 hover:underline font-medium"
+                  >
+                    Open Brevo Settings <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </AlertDescription>
             </Alert>
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase mb-1">
-                <Info className="w-3 h-3" /> Pro Tip
-              </div>
-              <p className="text-xs text-slate-600">
-                Ensure your Render environment variables are saved and the service has finished redeploying.
-              </p>
-            </div>
           </div>
         )}
       </CardContent>
