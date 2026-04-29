@@ -1,42 +1,66 @@
-## 📘 API Reference
+# 📧 qwerty-developers Mailing Service
 
+A high-performance, transactional mailing API with built-in anti-sleep protection and RFC-compliant unsubscribe headers.
 
-### Base URL
-`https://qwertymailingservice.onrender.com` 
-this is my render deployed app, if you need mailing api please contact 'qwertymailingdemon@gmail.com'
-or you can simply clone this repo and replace with create a .env similar to the .env.exaple and replace with you actual credentials and use your base url for api calls
+## 🔗 Base URL
+`https://qwertymailingservice.onrender.com`
 
-###Note this backed service is used by my projects and ai agents for mailing, and many times the mail received might be in promotions or spam based on the context it is being used as this is not specified for particular context, and brevo mailing is used hence it mostly considers the mails received from this api to be a promotion as breavo is mostly used for bulk marketting
-
-### Authentication
+## 🔐 Authentication
 All requests must include the following header:
 `x-api-key: YOUR_SERVICE_API_KEY`
-I will give this key in .env keep place holders
-
 
 ---
 
+## 🚀 Minimum Implementation (JavaScript/Fetch)
 
-### POST /send-email
-
-
-Sends a transactional email.
-
-
-**Headers:**
-- `Content-Type: application/json`
-- `x-api-key: YOUR_SERVICE_API_KEY`
-
-
-**Request Body:**
-```json
-{
-  "to": ["recipient@example.com"],
-  "subject": "Hello from Mailing Agent",
-  "html": "<h1>Welcome!</h1><p>This is a test email.</p>",
-  "from": {
-    "email": "verified@yourdomain.com", //there is a default sender if this is not used hence don’t use this and let it handle by default sender
-    "name": "Custom Sender"
-  }
-}
+```javascript
+const sendEmail = async () => {
+  const response = await fetch('https://qwertymailingservice.onrender.com/send-email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'YOUR_SERVICE_API_KEY'
+    },
+    body: JSON.stringify({
+      to: ['recipient@example.com'],
+      subject: 'Hello World',
+      html: '<h1>Test Email</h1><p>Sent via qwerty-developers.</p>'
+    })
+  });
+  
+  const data = await response.json();
+  console.log(data);
+};
 ```
+
+---
+
+## 🛠 API Reference: `POST /send-email`
+
+### Required Parameters
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `to` | `string[]` | An array of recipient email addresses. |
+| `subject` | `string` | The subject line of the email. |
+| `html` | `string` | The HTML content of the email body. |
+
+### Optional Parameters
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `from` | `object` | `{ email: string, name?: string }`. Defaults to `qwerty-developers`. |
+| `cc` | `string[]` | Array of emails to carbon copy. |
+| `bcc` | `string[]` | Array of emails to blind carbon copy. |
+| `replyTo` | `string` | Email address for replies. |
+| `attachments` | `object[]` | `[{ name: string, content: string }]`. Content must be **Base64 encoded**. |
+
+---
+
+## 📋 Exact Requirements for Use
+1. **Service API Key**: You must have the secret key configured in the environment variables of the deployed service.
+2. **Brevo API Key**: The service requires a valid Brevo (Sendinblue) API v3 key with **Transactional** features enabled.
+3. **Verified Sender**: The `DEFAULT_SENDER_EMAIL` must be a verified sender in the associated Brevo account.
+4. **Content-Type**: Always send requests with `application/json`.
+
+## 💡 Pro Tips
+- **Anti-Sleep**: The service pings itself every 40 seconds. If you are using Render's free tier, the first request after a long period of inactivity might still take ~30 seconds to respond as the instance boots up.
+- **Unsubscribe**: A standard unsubscribe footer is automatically appended to your HTML if it doesn't already contain the word "Unsubscribe".
